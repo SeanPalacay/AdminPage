@@ -2,9 +2,69 @@
 <html>
   <head>
     <title> Admin Page to create / edit / delete user</title>
+    
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
   </head>
 <body>
   
+  
+
+
+<style>
+  /* Add some styling to the form */
+  form {
+    width: 500px;
+    margin: auto;
+    background-color: lightgray;
+    padding: 20px;
+  }
+
+  /* Add some styling to the table */
+  table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th {
+  background-color: #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+td {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+
+  /* Add some styling to the input fields */
+  input[type="text"], input[type="email"], input[type="password"] {
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid black;
+    background-color: transparent;
+  }
+
+  /* Add some styling to the buttons */
+  button[type="submit"] {
+    background-color: blue;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  /* Add some styling to the error messages */
+  .error {
+    color: red;
+  }
+</style>
 <?php
 
 // Connect to the database
@@ -36,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       $name = testinput($_POST["name"]);
       $name = $db->real_escape_string($_POST['name']);
       if (!preg_match("/^[a-zA-Z-' ]*$/",$name)){
-        Echo "Invalid Name, only letters and white spaces are allowed";
+        $nameErr = "Invalid Name, only letters and white spaces are allowed";
 }
      }
 
@@ -85,7 +145,7 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
 <table border = "1">
   <td>
 <form method="post" action = "<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-  <h3 style="text-align: center">Create a new user</h3>
+  <h3 style="text-align: center">Create a New User</h3>
   <table >
     <tr> 
       <td> 
@@ -118,13 +178,14 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
 <hr>
 
 <!-- Display a list of users -->
+
 <table>
   <tr>
     <th >ID</th>
     <th>Name</th>
     <th>Email</th>
     <th>Password</th>
-    <th> Actions</th>
+    <th style = "text-align: center" colspan = 2> Actions</th>
   </tr>
   <?php foreach ($users as $user): ?>
   <tr>
@@ -141,7 +202,7 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
       Name: <input type="text" id="name" name="name" value="<?php echo $user['UserName'] ?>">
       Email: <input type="email" id="email" name="email" value="<?php echo $user['UserEmail'] ?>">
       Password: <input type="password" id="password" name="password" value="<?php echo $user['UserPass'] ?>">
-      
+      <br><br>
       <button type="submit" name="edit">Edit</button>
       </form>
 </td>
