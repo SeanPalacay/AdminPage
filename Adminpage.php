@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
      
     $query = "INSERT INTO users (UserName, UserEmail, UserPass) VALUES ('$name', '$email', '$password')";
     $db->query($query);
-
+  
 
   } elseif (isset($_POST['edit'])) {
     // Edit an existing user
@@ -219,7 +219,41 @@ $users = $result->fetch_all(MYSQLI_ASSOC);
   </tr>
   <?php endforeach; ?>
 </table>
+<?php
 
+function saveDbToExcel($host, $username, $password, $dbname) {
+    // Connect to the database
+    $conn = new mysqli($host, $username, $password, $dbname);
+    // Check the connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+    // Select the data
+    $sql = "SELECT * FROM users";
+    $result = $conn->query($sql);
+    // Open the Excel file in write mode
+    $file = fopen('users.csv', 'w');
+    // Write the header row
+    fputcsv($file, array('Name', 'Email', 'Password'));
+    // Write the data
+    while($row = $result->fetch_assoc()) {
+        fputcsv($file, array($row['UserName'], $row['UserEmail'], $row['UserPass']));
+    }
+    // Close the file
+    fclose($file);
+    // Close the connection
+    $conn->close();
+}
+
+if(empty($users)){
+  echo "data is empty";
+}else{
+
+  saveDbToExcel("localhost", "root", "", "admindb");
+  // Create the download button
+  echo '<a href="users.csv" download="users.csv">Download</a>';
+}
+?>
 </body>
 
 </html>
